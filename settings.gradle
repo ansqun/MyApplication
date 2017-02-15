@@ -1,1 +1,1 @@
-include ':app', ':sevenpass'
+include ':app', ':sevenpass', ':clock'
