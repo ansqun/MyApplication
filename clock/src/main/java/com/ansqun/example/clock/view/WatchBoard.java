@@ -22,6 +22,8 @@ import java.util.Calendar;
 public class WatchBoard extends View {
     private static final String TAG = "WatchBoard";
 
+    private static int mMillisecondAngle = 0;
+
     private float mRadius;          //外圆半径
     private float mPadding;         //边距
     private float mTextSize;        //文字大小
@@ -51,6 +53,7 @@ public class WatchBoard extends View {
     public WatchBoard(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         obtainStyleAttrs(attrs);
+        mMillisecondAngle = Calendar.getInstance().get(Calendar.SECOND) * 6;
         initPaint();
     }
 
@@ -151,7 +154,7 @@ public class WatchBoard extends View {
         drawPointer(canvas);
         canvas.restore();
 
-        postInvalidateDelayed(1000);
+        postInvalidateDelayed(1000 / 6);
     }
 
     /**
@@ -212,10 +215,11 @@ public class WatchBoard extends View {
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         int minute = calendar.get(Calendar.MINUTE);
         int second = calendar.get(Calendar.SECOND);
+        int millisecond = calendar.get(Calendar.MILLISECOND);
         int angleHour = (hour % 12) * 360 / 12;
         int angleMinute = minute * 360 / 60;
         int angleSecond = second * 360 / 60;
-        Log.d(TAG, "hour is " + hour + ", minute is " + minute + ", second is " + second);
+        int angleMilliSecond = millisecond * 6 / 1000;
 
         RectF rectF = new RectF();
         //绘制时针
@@ -240,7 +244,9 @@ public class WatchBoard extends View {
 
         //绘制秒针
         canvas.save();
-        canvas.rotate(angleSecond);
+//        canvas.rotate(angleSecond);
+        Log.d(TAG, "mMillisecondAngle % 360 is " + (mMillisecondAngle % 360));
+        canvas.rotate(mMillisecondAngle++ % 360);
         rectF.set(-mSecondPointWidth / 2, -mRadius + 15, mSecondPointWidth / 2, mPointEndLength);
         mPaint.setColor(mSecondPointColor);
         mPaint.setStyle(Paint.Style.STROKE);
